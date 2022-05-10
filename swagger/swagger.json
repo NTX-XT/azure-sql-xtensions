@@ -1,0 +1,120 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Azure SQL Xtensions",
+        "description": "Additional Azure SQL database functions for NWC",
+        "version": "1.0.0"
+    },
+    "host": "azure-sql-xtensions.azurewebsites.net",
+    "x-ntx-host": "{{host}}",
+    "basePath": "/api",
+    "x-ntx-basePath": "/{{basePath}}",
+    "schemes": ["https"],
+    "produces": ["application/json"],
+    "paths": {
+        "/runScript": {
+            "post": {
+                "summary": "Run Script",
+                "description": "Run a script on an Azure SQL database",
+                "operationId": "runScript",
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Script execution failed"
+                    }
+                },
+                "parameters": [{
+                    "in": "body",
+                    "name": "params",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "connection": {
+                                "$ref": "#/definitions/connection"
+                            },
+                            "script": {
+                                "type": "string",
+                                "x-ntx-summary": "Script",
+                                "minLength": 1
+                            }
+                        },
+                        "required": [
+                            "connection",
+                            "script"
+                        ]
+                    },
+                    "required": true
+                }]
+            }
+        }
+    },
+    "definitions": {
+        "connection": {
+            "type": "object",
+            "properties": {
+                "server": {
+                    "type": "string",
+                    "x-ntx-summary": "Server name",
+                    "minLength": 1
+                },
+                "port": {
+                    "type": "string",
+                    "x-ntx-summary": "Server port (defaults to 1433)"
+                },
+                "dbName": {
+                    "type": "string",
+                    "x-ntx-summary": "Database name",
+                    "minLength": 1
+                },
+                "userName": {
+                    "type": "string",
+                    "x-ntx-summary": "Username",
+                    "minLength": 1
+                },
+                "password": {
+                    "type": "string",
+                    "x-ntx-summary": "Password",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "server",
+                "dbName",
+                "userName",
+                "password"
+            ]
+        }
+    },
+    "security": [{
+        "FunctionKey": []
+    }],
+    "securityDefinitions": {
+        "FunctionKey": {
+            "name": "code",
+            "in": "query",
+            "type": "apiKey",
+            "x-ntx-connection-properties": {
+                "type": "object",
+                "properties": {
+                    "host": {
+                        "type": "string",
+                        "title": "Host",
+                        "description": "The domain that the middleware is hosted (i.e. myFunction.azurewebsites.net)"
+                    },
+                    "basePath": {
+                        "type": "string",
+                        "title": "Base path",
+                        "description": "The base path for the middleware functions, excluding the precedding slash (api, not /api)"
+                    }
+                },
+                "required": [
+                    "host",
+                    "basePath"
+                ]
+            }
+        }
+    }
+}
